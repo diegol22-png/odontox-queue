@@ -23,4 +23,8 @@ module.exports = {
     instance: process.env.EVOLUTION_API_INSTANCE,
     apiKey: process.env.EVOLUTION_API_KEY,
   },
+  panel: {
+    user: process.env.PANEL_USER || 'admin',
+    password: process.env.PANEL_PASSWORD || 'odontox123',
+  },
 };

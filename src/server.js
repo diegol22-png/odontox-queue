@@ -5,6 +5,7 @@ const { Server } = require('socket.io');
 const helmet = require('helmet');
 const morgan = require('morgan');
 const rateLimit = require('express-rate-limit');
+const basicAuth = require('express-basic-auth');
 const path = require('path');
 
 const { errorHandler } = require('./middleware/errorHandler');
@@ -48,11 +49,18 @@ const queueLimiter = rateLimit({
 // Arquivos estaticos
 app.use(express.static(path.join(__dirname, '../public')));
 
+// Autenticacao do painel
+const panelAuth = basicAuth({
+  users: { [env.panel.user]: env.panel.password },
+  challenge: true,
+  realm: 'OdontoX Painel',
+});
+
 // Rotas da API
 app.use('/api/exams', examRoutes);
 app.use('/api/queue', queueRoutes);
 app.post('/api/queue', queueLimiter);
-app.use('/api/panel', panelRoutes);
+app.use('/api/panel', panelAuth, panelRoutes);
 
 // Rota para pagina da fila (SPA - serve o mesmo HTML)
 app.get('/fila/:id', (req, res) => {
@@ -60,7 +68,7 @@ app.get('/fila/:id', (req, res) => {
 });
 
 // Rota para painel profissional
-app.get('/painel', (req, res) => {
+app.get('/painel', panelAuth, (req, res) => {
   res.sendFile(path.join(__dirname, '../public/painel.html'));
 });
 
