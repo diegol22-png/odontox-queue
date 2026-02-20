@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sua Fila - OdontoX</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body class="page-fila">
+  <div class="header">
+    <h1>OdontoX</h1>
+    <p class="subtitle">Acompanhe sua posicao na fila</p>
+  </div>
+
+  <div class="container-fila">
+    <!-- Alerta de chamada -->
+    <div id="calledAlert" class="called-alert">
+      <h2>E a sua vez!</h2>
+      <p>Dirija-se ao setor de <strong id="calledExam"></strong></p>
+    </div>
+
+    <!-- Informacoes do paciente -->
+    <div id="patientCard" class="card">
+      <div style="text-align: center; margin-bottom: 1rem;">
+        <span id="statusBadge" class="badge badge-waiting">Aguardando</span>
+      </div>
+
+      <div class="position-display" id="positionDisplay">
+        <div class="position-label">Sua posicao na fila</div>
+        <div class="position-number" id="positionNumber">-</div>
+        <div class="position-label" id="positionHint">aguarde sua chamada</div>
+      </div>
+
+      <div style="text-align: center; color: var(--gray-500); font-size: 0.9rem;">
+        <p><strong id="patientName">-</strong></p>
+        <p>Exame: <strong id="examName">-</strong></p>
+        <p style="margin-top: 0.5rem; font-size: 0.8rem;" id="entryTime"></p>
+      </div>
+    </div>
+
+    <!-- Erro -->
+    <div id="errorCard" class="card" style="display: none; text-align: center;">
+      <p style="color: var(--danger); font-size: 1.1rem; margin-bottom: 1rem;">Paciente nao encontrado na fila.</p>
+      <a href="/" class="btn btn-primary">Voltar para recepcao</a>
+    </div>
+  </div>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="/js/queue-status.js"></script>
+</body>
+</html>

@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Painel Profissional - OdontoX</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body class="page-painel">
+  <div class="header">
+    <h1>OdontoX</h1>
+    <p class="subtitle">Painel Profissional</p>
+  </div>
+
+  <div class="container-wide">
+    <div id="alert" class="alert"></div>
+
+    <div id="panelGrid" class="panel-grid">
+      <!-- Cards de exames serao inseridos pelo JS -->
+    </div>
+
+    <!-- Admin Section -->
+    <div class="admin-section">
+      <div class="admin-toggle" id="adminToggle">
+        &#9881; Gerenciar Tipos de Exame
+      </div>
+      <div class="admin-content" id="adminContent">
+        <div class="card">
+          <h3 class="card-title">Adicionar Tipo de Exame</h3>
+          <div class="admin-form">
+            <input type="text" id="newExamName" placeholder="Nome do novo exame" maxlength="100">
+            <button class="btn btn-primary btn-sm" id="addExamBtn">Adicionar</button>
+          </div>
+          <div id="examList"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="/js/panel.js"></script>
+</body>
+</html>

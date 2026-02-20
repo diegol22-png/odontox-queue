@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fila Virtual - OdontoX</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <div class="container">
+    <div class="logo">
+      <img src="https://i.imgur.com/rFcVJVI.png" alt="OdontoX">
+    </div>
+
+    <div class="welcome">
+      <p><strong>Bem-vindo a Fila Virtual da OdontoX!</strong><br>
+      E um prazer recebe-los. Por favor, preencha seus dados para entrar na fila de atendimento.</p>
+    </div>
+
+    <div id="alert" class="alert"></div>
+
+    <div id="formSection">
+      <form id="queueForm">
+        <div class="form-group">
+          <label for="name">Nome Completo *</label>
+          <input type="text" id="name" name="name" placeholder="Por favor, digite seu nome" required minlength="2" maxlength="100" autocomplete="name">
+        </div>
+
+        <div class="form-group">
+          <label for="phone">Telefone com DDD *</label>
+          <input type="tel" id="phone" name="phone" placeholder="Digite um telefone valido (ex: 21999999999)" required maxlength="11" autocomplete="tel">
+        </div>
+
+        <div class="form-group">
+          <label for="examType">Tipo de Exame *</label>
+          <select id="examType" name="examType" required>
+            <option value="">Selecione o exame...</option>
+          </select>
+        </div>
+
+        <button type="submit" class="btn" id="submitBtn">Entrar na Fila</button>
+      </form>
+    </div>
+
+    <div id="successSection" class="success-message">
+      <div class="success-icon">&#10004;</div>
+      <h2>Cadastro Realizado!</h2>
+      <p>Voce foi adicionado a fila com sucesso.</p>
+      <div class="queue-number" id="queueNumber">-</div>
+      <p><strong>Sua posicao na fila</strong></p>
+      <p>Em breve voce recebera uma confirmacao via WhatsApp.</p>
+      <p>Aguarde ser chamado!</p>
+      <a id="queueLink" href="#" class="success-link">Acompanhar minha fila</a>
+    </div>
+  </div>
+
+  <script src="/js/reception.js"></script>
+</body>
+</html>
