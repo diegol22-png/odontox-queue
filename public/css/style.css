@@ -524,6 +524,47 @@ body.page-painel {
   margin-top: 0.15rem;
 }
 
+/* Historico */
+.historico-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.875rem;
+}
+
+.historico-table th {
+  text-align: left;
+  padding: 0.5rem 0.75rem;
+  background: var(--gray-100);
+  color: var(--gray-600);
+  font-weight: 600;
+  border-bottom: 2px solid var(--gray-200);
+}
+
+.historico-table td {
+  padding: 0.5rem 0.75rem;
+  border-bottom: 1px solid var(--gray-100);
+  color: var(--gray-700);
+}
+
+.historico-table tr:last-child td { border-bottom: none; }
+.historico-table tr:hover td { background: var(--gray-50, #fafafa); }
+
+.filtro-btn {
+  background: var(--gray-100);
+  color: var(--gray-600);
+  border: 1px solid var(--gray-200);
+}
+
+.filtro-btn.active {
+  background: var(--primary);
+  color: white;
+  border-color: var(--primary);
+}
+
+.filtro-btn:hover:not(.active) {
+  background: var(--gray-200);
+}
+
 .patient-actions {
   display: flex;
   gap: 0.3rem;

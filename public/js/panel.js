@@ -207,6 +207,79 @@ async function removeExam(id) {
   }
 }
 
+// Historico
+const historicoToggle = document.getElementById('historicoToggle');
+const historicoContent = document.getElementById('historicoContent');
+const historicoList = document.getElementById('historicoList');
+
+let historicoFiltro = 'all';
+let historicoData = [];
+
+historicoToggle.addEventListener('click', () => {
+  historicoContent.classList.toggle('show');
+  if (historicoContent.classList.contains('show')) {
+    loadHistorico();
+  }
+});
+
+document.getElementById('historicoFiltros').addEventListener('click', (e) => {
+  const btn = e.target.closest('.filtro-btn');
+  if (!btn) return;
+  document.querySelectorAll('.filtro-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  historicoFiltro = btn.dataset.status;
+  renderHistorico();
+});
+
+async function loadHistorico() {
+  try {
+    const res = await fetch('/api/panel/queues');
+    const queues = await res.json();
+    historicoData = queues.flatMap(q =>
+      q.patients.map(p => ({ ...p, examType: q.examType.name }))
+    ).sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+    renderHistorico();
+  } catch {
+    historicoList.innerHTML = '<p style="color:var(--danger)">Erro ao carregar histórico.</p>';
+  }
+}
+
+function renderHistorico() {
+  const statusLabels = { waiting: 'Aguardando', called: 'Chamado', completed: 'Concluído', cancelled: 'Retirado' };
+  const filtered = historicoFiltro === 'all' ? historicoData : historicoData.filter(p => p.status === historicoFiltro);
+
+  if (filtered.length === 0) {
+    historicoList.innerHTML = '<p style="text-align:center;color:var(--gray-500);padding:1rem;">Nenhum paciente encontrado.</p>';
+    return;
+  }
+
+  historicoList.innerHTML = `
+    <table class="historico-table">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Nome</th>
+          <th>Exame</th>
+          <th>Entrada</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${filtered.map(p => `
+          <tr>
+            <td>${p.position}</td>
+            <td>${escapeHtml(p.name)}</td>
+            <td>${escapeHtml(p.examType)}</td>
+            <td>${p.createdAt ? new Date(p.createdAt).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }) : '-'}</td>
+            <td>${getStatusBadge(p.status)}</td>
+          </tr>
+        `).join('')}
+      </tbody>
+    </table>
+    <p style="text-align:right;color:var(--gray-500);font-size:0.8rem;margin-top:0.5rem;">${filtered.length} paciente(s)</p>
+  `;
+}
+
 // Socket.IO
 const socket = io();
 

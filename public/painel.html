@@ -18,6 +18,25 @@
       <!-- Cards de exames serao inseridos pelo JS -->
     </div>
 
+    <!-- Historico Section -->
+    <div class="admin-section">
+      <div class="admin-toggle" id="historicoToggle">
+        &#128203; Histórico de Pacientes do Dia
+      </div>
+      <div class="admin-content" id="historicoContent">
+        <div class="card">
+          <div id="historicoFiltros" style="display:flex;gap:0.5rem;flex-wrap:wrap;margin-bottom:1rem;">
+            <button class="btn btn-sm filtro-btn active" data-status="all">Todos</button>
+            <button class="btn btn-sm filtro-btn" data-status="waiting">Aguardando</button>
+            <button class="btn btn-sm filtro-btn" data-status="called">Chamado</button>
+            <button class="btn btn-sm filtro-btn" data-status="completed">Concluído</button>
+            <button class="btn btn-sm filtro-btn" data-status="cancelled">Retirado</button>
+          </div>
+          <div id="historicoList"></div>
+        </div>
+      </div>
+    </div>
+
     <!-- Admin Section -->
     <div class="admin-section">
       <div class="admin-toggle" id="adminToggle">
