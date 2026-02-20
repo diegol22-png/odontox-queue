@@ -27,8 +27,9 @@ async function sendMessage(phone, text) {
 async function sendQueueConfirmation(phone, name, position, examName, queueId) {
   const link = `${env.baseUrl}/fila/${queueId}`;
   const text =
-    `Ola ${name}! Você entrou na fila virtual da *OdontoX*.\n\n` +
-    `*Exame:* ${examName}\n\n` +
+    `Ola *${name}*!\n` +
+    `Você entrou na fila virtual da *OdontoX*.\n\n` +
+    `*Exame:* *${examName}*\n\n` +
     `*Sua posição:* ${position}\n\n` +
     `Acompanhe sua fila em tempo real:\n\n` +
     `${link}\n\n` +
