@@ -11,17 +11,49 @@ const statusBadge = document.getElementById('statusBadge');
 const patientName = document.getElementById('patientName');
 const examName = document.getElementById('examName');
 const entryTime = document.getElementById('entryTime');
+const waitingTime = document.getElementById('waitingTime');
 
 let currentExamTypeId = null;
+let currentCreatedAt = null;
+let waitingTimerInterval = null;
+
+function formatWaitingTime(createdAt) {
+  const diffMin = Math.floor((Date.now() - new Date(createdAt)) / 60000);
+  if (diffMin < 1) return 'Aguardando há menos de 1 min';
+  if (diffMin < 60) return `Aguardando há ${diffMin} min`;
+  const hours = Math.floor(diffMin / 60);
+  const mins = diffMin % 60;
+  return mins > 0 ? `Aguardando há ${hours}h ${mins}min` : `Aguardando há ${hours}h`;
+}
+
+function startWaitingTimer(createdAt) {
+  if (waitingTimerInterval) clearInterval(waitingTimerInterval);
+  waitingTime.textContent = formatWaitingTime(createdAt);
+  waitingTimerInterval = setInterval(() => {
+    waitingTime.textContent = formatWaitingTime(createdAt);
+  }, 60000);
+}
+
+function stopWaitingTimer() {
+  if (waitingTimerInterval) clearInterval(waitingTimerInterval);
+  waitingTime.textContent = '';
+}
 
 function updateUI(data) {
   patientName.textContent = data.name;
   examName.textContent = data.examType;
   currentExamTypeId = data.examTypeId;
+  currentCreatedAt = data.createdAt;
 
   if (data.createdAt) {
     const date = new Date(data.createdAt);
     entryTime.textContent = `Entrada: ${date.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}`;
+  }
+
+  if (data.status === 'waiting' && data.createdAt) {
+    startWaitingTimer(data.createdAt);
+  } else {
+    stopWaitingTimer();
   }
 
   updateStatus(data.status, data.position, data.examType);

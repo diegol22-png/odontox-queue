@@ -329,14 +329,34 @@ body.page-painel {
   box-shadow: 0 4px 20px rgba(168, 84, 84, 0.3);
 }
 
+.page-painel .header {
+  background: #f8f4f4;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  padding: 1rem 2rem;
+}
+
+.header-inner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.header-logo {
+  height: 56px;
+  width: auto;
+  border-radius: 8px;
+  flex-shrink: 0;
+}
+
 .header h1 {
   font-size: 1.5rem;
   font-weight: 700;
 }
 
 .header .subtitle {
-  font-size: 0.9rem;
-  opacity: 0.85;
+  font-size: 1.05rem;
+  opacity: 0.9;
   margin-top: 0.25rem;
 }
 
@@ -498,6 +518,12 @@ body.page-painel {
   color: var(--gray-500);
 }
 
+.patient-wait-time {
+  font-size: 0.75rem;
+  color: var(--warning, #f59e0b);
+  margin-top: 0.15rem;
+}
+
 .patient-actions {
   display: flex;
   gap: 0.3rem;
@@ -587,6 +613,7 @@ body.page-painel {
 
   .header { padding: 1rem; }
   .header h1 { font-size: 1.2rem; }
+  .header-logo { height: 40px; }
 
   .panel-grid { grid-template-columns: 1fr; }
   .position-number { font-size: 4rem; }

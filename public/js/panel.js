@@ -56,6 +56,7 @@ function renderQueues(queues) {
                 <div class="patient-info">
                   <div class="patient-name">${escapeHtml(p.name)}</div>
                   <div class="patient-phone">${p.phone}</div>
+                  ${p.status === 'waiting' && p.createdAt ? `<div class="patient-wait-time">⏱ ${formatWaitingTime(p.createdAt)}</div>` : ''}
                 </div>
                 ${getStatusBadge(p.status)}
                 <div class="patient-actions">
@@ -63,7 +64,7 @@ function renderQueues(queues) {
                     <button class="btn btn-success btn-sm" onclick="completePatient(${p.id})">Concluir</button>
                   ` : ''}
                   ${p.status !== 'completed' && p.status !== 'cancelled' ? `
-                    <button class="btn btn-danger btn-sm" onclick="cancelPatient(${p.id})">Cancelar</button>
+                    <button class="btn btn-danger btn-sm" onclick="cancelPatient(${p.id})">Retirar</button>
                   ` : ''}
                 </div>
               </li>
@@ -74,6 +75,15 @@ function renderQueues(queues) {
     `;
     panelGrid.appendChild(card);
   });
+}
+
+function formatWaitingTime(createdAt) {
+  const diffMin = Math.floor((Date.now() - new Date(createdAt)) / 60000);
+  if (diffMin < 1) return '< 1 min';
+  if (diffMin < 60) return `${diffMin} min`;
+  const hours = Math.floor(diffMin / 60);
+  const mins = diffMin % 60;
+  return mins > 0 ? `${hours}h ${mins}min` : `${hours}h`;
 }
 
 function escapeHtml(text) {
@@ -126,7 +136,7 @@ async function completePatient(id) {
 }
 
 async function cancelPatient(id) {
-  if (!confirm('Tem certeza que deseja cancelar este paciente da fila?')) return;
+  if (!confirm('Tem certeza que deseja retirar este paciente da fila?')) return;
 
   try {
     const res = await fetch(`/api/panel/cancel/${id}`, { method: 'PATCH' });
@@ -214,3 +224,6 @@ socket.on('queue:updated', () => {
 
 // Carregar filas inicialmente
 loadQueues();
+
+// Atualizar tempos de espera a cada minuto
+setInterval(loadQueues, 60000);
