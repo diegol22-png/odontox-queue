@@ -13,6 +13,8 @@ async function sendMessage(phone, text) {
     body: JSON.stringify({
       number: formattedPhone,
       text,
+      delay: 1200,
+      linkPreview: true,
     }),
   });
 
