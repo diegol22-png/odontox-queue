@@ -2,6 +2,17 @@
 
 ---
 
+## #8 · 2026-02-21 · Histórico por data e retenção de 30 dias
+
+- Retenção de dados no banco alterada de 7 para **30 dias** (`queueModel.js`)
+- Adicionado endpoint `GET /api/panel/history?date=YYYY-MM-DD` para consultar qualquer dia
+- Adicionado método `getAllByDate(date)` no `queueModel.js` e `getHistoryByDate(date)` no `queueService.js`
+- Adicionado seletor de **Data** + botão **Buscar** na seção de Histórico do painel
+- Histórico abre automaticamente na data de hoje; data exibida no rodapé da tabela
+- Título da seção atualizado para "Histórico de Pacientes"
+
+---
+
 ## #7 · 2026-02-21 · Coluna "Espera" no histórico de pacientes
 
 - Adicionada coluna **Espera** na tabela "Histórico de Pacientes do Dia"
