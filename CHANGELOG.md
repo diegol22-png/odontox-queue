@@ -2,6 +2,16 @@
 
 ---
 
+## #7 · 2026-02-21 · Coluna "Espera" no histórico de pacientes
+
+- Adicionada coluna **Espera** na tabela "Histórico de Pacientes do Dia"
+- Para pacientes já chamados: exibe o tempo entre a entrada na fila e o momento da chamada (`calledAt - createdAt`)
+- Para pacientes ainda aguardando: exibe o tempo decorrido desde a entrada até agora
+- Para pacientes cancelados antes de serem chamados: exibe `-`
+- Adicionadas funções auxiliares `formatDuration()` e `getWaitTime()` em `panel.js`
+
+---
+
 ## #1 · 2026-02-21 · Autenticação HTTP Basic Auth no painel
 
 - Instalada a biblioteca `express-basic-auth`
