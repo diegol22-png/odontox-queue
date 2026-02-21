@@ -100,6 +100,22 @@ function formatWaitingTime(createdAt) {
   return mins > 0 ? `${hours}h ${mins}min` : `${hours}h`;
 }
 
+function formatDuration(start, end) {
+  const diffMin = Math.floor((new Date(end) - new Date(start)) / 60000);
+  if (diffMin < 1) return '< 1 min';
+  if (diffMin < 60) return `${diffMin} min`;
+  const hours = Math.floor(diffMin / 60);
+  const mins = diffMin % 60;
+  return mins > 0 ? `${hours}h ${mins}min` : `${hours}h`;
+}
+
+function getWaitTime(p) {
+  if (!p.createdAt) return '-';
+  if (p.calledAt) return formatDuration(p.createdAt, p.calledAt);
+  if (p.status === 'waiting') return formatDuration(p.createdAt, new Date());
+  return '-';
+}
+
 function escapeHtml(text) {
   const div = document.createElement('div');
   div.textContent = text;
@@ -313,6 +329,7 @@ function renderHistorico() {
           <th>Nome</th>
           <th>Exame</th>
           <th>Entrada</th>
+          <th>Espera</th>
           <th>Status</th>
         </tr>
       </thead>
@@ -323,6 +340,7 @@ function renderHistorico() {
             <td>${escapeHtml(p.name)}</td>
             <td>${escapeHtml(p.examType)}</td>
             <td>${p.createdAt ? new Date(p.createdAt).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }) : '-'}</td>
+            <td>${getWaitTime(p)}</td>
             <td>${getStatusBadge(p.status)}</td>
           </tr>
         `).join('')}
