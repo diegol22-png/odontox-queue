@@ -88,22 +88,25 @@ const examAuthMiddleware = (req, res, next) => {
 app.use('/api/exams', examAuthMiddleware, examRoutes);
 app.use('/api/queue', queueRoutes);
 app.post('/api/queue', queueLimiter);
-// Rotas de leitura do painel (todos os usuarios)
-app.get('/api/panel/queues', panelAuth, panelRoutes);
 
-// Rotas de acao do painel (apenas admin e tecnico)
-app.post('/api/panel/call-next', operatorOrAdmin, panelRoutes);
-app.patch('/api/panel/complete/:id', operatorOrAdmin, panelRoutes);
-app.patch('/api/panel/cancel/:id', operatorOrAdmin, panelRoutes);
+// Bloqueia recepcao nas rotas de acao do painel
+const blockReception = (req, res, next) => {
+  const authHeader = req.headers.authorization || '';
+  if (authHeader.startsWith('Basic ')) {
+    const decoded = Buffer.from(authHeader.slice(6), 'base64').toString();
+    const username = decoded.split(':')[0];
+    if (username === env.panel.receptionUser) {
+      return res.status(403).json({ error: { message: 'Acesso negado', code: 'FORBIDDEN' } });
+    }
+  }
+  next();
+};
+app.post('/api/panel/call-next', blockReception);
+app.patch('/api/panel/complete/:id', blockReception);
+app.patch('/api/panel/cancel/:id', blockReception);
 
-// Endpoint para o frontend saber o role do usuario logado
-app.get('/api/panel/role', panelAuth, (req, res) => {
-  const user = req.auth.user;
-  let role = 'reception';
-  if (user === env.panel.user) role = 'admin';
-  else if (user === env.panel.operatorUser) role = 'operator';
-  res.json({ role });
-});
+// Todas as rotas do painel (autenticadas por panelAuth)
+app.use('/api/panel', panelAuth, panelRoutes);
 
 // Rota para pagina da fila (SPA - serve o mesmo HTML)
 app.get('/fila/:id', (req, res) => {

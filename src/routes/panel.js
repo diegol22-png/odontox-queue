@@ -1,8 +1,17 @@
 const { Router } = require('express');
 const queueService = require('../services/queueService');
 const { validateCallNext, validateIdParam } = require('../middleware/validation');
+const env = require('../config/env');
 
 const router = Router();
+
+router.get('/role', (req, res) => {
+  const user = req.auth.user;
+  let role = 'reception';
+  if (user === env.panel.user) role = 'admin';
+  else if (user === env.panel.operatorUser) role = 'operator';
+  res.json({ role });
+});
 
 router.get('/queues', (req, res, next) => {
   try {
