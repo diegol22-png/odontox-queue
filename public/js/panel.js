@@ -165,11 +165,11 @@ async function loadExamList() {
       <div id="msgEditor-${e.id}" class="msg-editor" style="display:none;padding:0.75rem;background:#f9f9f9;border-radius:6px;margin-bottom:0.5rem;">
         <p style="font-size:0.75rem;color:var(--gray-500);margin-bottom:0.5rem;">Variáveis: <b>{nome}</b>, <b>{exame}</b>, <b>{posicao}</b>, <b>{link}</b></p>
         <label style="font-size:0.8rem;font-weight:600;">Mensagem de entrada na fila:</label>
-        <textarea id="queueMsg-${e.id}" rows="4" style="width:100%;margin:0.25rem 0 0.5rem;font-size:0.8rem;padding:0.5rem;border:1px solid #ddd;border-radius:4px;resize:vertical;">${escapeHtml(e.queue_message || '')}</textarea>
+        <textarea id="queueMsg-${e.id}" rows="5" placeholder="Ola {nome}!&#10;Voce entrou na fila virtual da OdontoX.&#10;&#10;Exame: {exame}&#10;Sua posicao: {posicao}&#10;&#10;Acompanhe sua fila em tempo real:&#10;{link}&#10;&#10;Aguarde a chamada. Obrigado!" style="width:100%;margin:0.25rem 0 0.5rem;font-size:0.8rem;padding:0.5rem;border:1px solid #ddd;border-radius:4px;resize:vertical;">${escapeHtml(e.queue_message || '')}</textarea>
         <label style="font-size:0.8rem;font-weight:600;">Mensagem de chamada:</label>
-        <textarea id="callMsg-${e.id}" rows="3" style="width:100%;margin:0.25rem 0 0.5rem;font-size:0.8rem;padding:0.5rem;border:1px solid #ddd;border-radius:4px;resize:vertical;">${escapeHtml(e.call_message || '')}</textarea>
+        <textarea id="callMsg-${e.id}" rows="4" placeholder="{nome}, e a sua vez!&#10;&#10;Dirija-se ao setor de {exame}.&#10;&#10;OdontoX agradece sua paciencia!" style="width:100%;margin:0.25rem 0 0.5rem;font-size:0.8rem;padding:0.5rem;border:1px solid #ddd;border-radius:4px;resize:vertical;">${escapeHtml(e.call_message || '')}</textarea>
         <button class="btn btn-primary btn-sm" onclick="saveMessages(${e.id})">Salvar Mensagens</button>
-        <span style="font-size:0.7rem;color:var(--gray-500);margin-left:0.5rem;">Deixe vazio para usar a mensagem padrão</span>
+        <span style="font-size:0.7rem;color:var(--gray-500);margin-left:0.5rem;">Deixe vazio para usar a mensagem padrão acima</span>
       </div>
     `).join('');
   } catch {
