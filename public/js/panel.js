@@ -6,6 +6,8 @@ const addExamBtn = document.getElementById('addExamBtn');
 const newExamName = document.getElementById('newExamName');
 const examList = document.getElementById('examList');
 
+let userRole = 'reception'; // sera atualizado apos checkRole()
+
 // Logout - invalida credenciais e redireciona para o painel (dispara nova caixa de login)
 function logout() {
   fetch('/painel', {
@@ -56,9 +58,10 @@ function renderQueues(queues) {
         <span class="count">${q.stats.waiting} aguardando</span>
       </div>
       <div class="exam-card-body">
+        ${userRole !== 'reception' ? `
         <button class="btn btn-success call-btn" onclick="callNext(${q.examType.id})" ${q.stats.waiting === 0 ? 'disabled' : ''}>
           Chamar Proximo
-        </button>
+        </button>` : ''}
         ${active.length === 0
           ? '<p class="empty-queue">Nenhum paciente na fila</p>'
           : `<ul class="patient-list">${active.map(p => `
@@ -69,6 +72,7 @@ function renderQueues(queues) {
                   ${p.status === 'waiting' && p.createdAt ? `<div class="patient-wait-time">⏱ ${formatWaitingTime(p.createdAt)}</div>` : ''}
                 </div>
                 ${getStatusBadge(p.status)}
+                ${userRole !== 'reception' ? `
                 <div class="patient-actions">
                   ${p.status === 'called' ? `
                     <button class="btn btn-success btn-sm" onclick="completePatient(${p.id})">Concluir</button>
@@ -76,7 +80,7 @@ function renderQueues(queues) {
                   ${p.status !== 'completed' && p.status !== 'cancelled' ? `
                     <button class="btn btn-danger btn-sm" onclick="cancelPatient(${p.id})">Retirar</button>
                   ` : ''}
-                </div>
+                </div>` : ''}
               </li>
             `).join('')}</ul>`
         }
@@ -343,15 +347,21 @@ socket.on('queue:updated', () => {
   loadQueues();
 });
 
-// Verificar role do usuario e esconder admin se operador
+// Verificar role do usuario e ajustar interface
 async function checkRole() {
   try {
     const res = await fetch('/api/panel/role');
     const data = await res.json();
-    if (data.role !== 'admin') {
+    userRole = data.role;
+
+    // Esconder secao de gerenciar exames para nao-admins
+    if (userRole !== 'admin') {
       const adminSection = document.querySelector('#adminToggle').closest('.admin-section');
       if (adminSection) adminSection.style.display = 'none';
     }
+
+    // Re-renderizar filas agora que o role e conhecido
+    loadQueues();
   } catch {}
 }
 

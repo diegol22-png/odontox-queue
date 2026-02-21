@@ -49,10 +49,11 @@ const queueLimiter = rateLimit({
 // Arquivos estaticos
 app.use(express.static(path.join(__dirname, '../public')));
 
-// Autenticacao do painel (admin + operador)
+// Autenticacao do painel (admin + tecnico + recepcao)
 const panelUsers = {
   [env.panel.user]: env.panel.password,
   [env.panel.operatorUser]: env.panel.operatorPassword,
+  [env.panel.receptionUser]: env.panel.receptionPassword,
 };
 
 const panelAuth = basicAuth({
@@ -68,6 +69,16 @@ const adminOnly = basicAuth({
   realm: 'OdontoX Painel',
 });
 
+// Middleware que exige admin ou tecnico (bloqueia recepcao)
+const operatorOrAdmin = basicAuth({
+  users: {
+    [env.panel.user]: env.panel.password,
+    [env.panel.operatorUser]: env.panel.operatorPassword,
+  },
+  challenge: true,
+  realm: 'OdontoX Painel',
+});
+
 // Rotas da API
 // GET /api/exams e livre (usado tambem pela recepcao); demais metodos exigem admin
 const examAuthMiddleware = (req, res, next) => {
@@ -77,11 +88,20 @@ const examAuthMiddleware = (req, res, next) => {
 app.use('/api/exams', examAuthMiddleware, examRoutes);
 app.use('/api/queue', queueRoutes);
 app.post('/api/queue', queueLimiter);
-app.use('/api/panel', panelAuth, panelRoutes);
+// Rotas de leitura do painel (todos os usuarios)
+app.get('/api/panel/queues', panelAuth, panelRoutes);
+
+// Rotas de acao do painel (apenas admin e tecnico)
+app.post('/api/panel/call-next', operatorOrAdmin, panelRoutes);
+app.patch('/api/panel/complete/:id', operatorOrAdmin, panelRoutes);
+app.patch('/api/panel/cancel/:id', operatorOrAdmin, panelRoutes);
 
 // Endpoint para o frontend saber o role do usuario logado
 app.get('/api/panel/role', panelAuth, (req, res) => {
-  const role = req.auth.user === env.panel.user ? 'admin' : 'operator';
+  const user = req.auth.user;
+  let role = 'reception';
+  if (user === env.panel.user) role = 'admin';
+  else if (user === env.panel.operatorUser) role = 'operator';
   res.json({ role });
 });
 

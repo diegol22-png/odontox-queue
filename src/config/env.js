@@ -28,5 +28,7 @@ module.exports = {
     password: process.env.PANEL_PASSWORD || 'odontox123',
     operatorUser: process.env.PANEL_OPERATOR_USER || 'tecnico',
     operatorPassword: process.env.PANEL_OPERATOR_PASSWORD || 'tecnico123',
+    receptionUser: process.env.PANEL_RECEPTION_USER || 'recepcao',
+    receptionPassword: process.env.PANEL_RECEPTION_PASSWORD || 'recepcao123',
   },
 };
