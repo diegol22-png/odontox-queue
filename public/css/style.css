@@ -335,6 +335,32 @@ body.page-painel {
   padding: 1rem 2rem;
 }
 
+.header-bar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.btn-logout {
+  position: absolute;
+  right: 0;
+  background: var(--primary);
+  color: white;
+  border: none;
+  padding: 6px 16px;
+  border-radius: 8px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: inherit;
+  transition: background 0.2s;
+}
+
+.btn-logout:hover {
+  background: var(--primary-dark);
+}
+
 .header-inner {
   display: flex;
   align-items: center;

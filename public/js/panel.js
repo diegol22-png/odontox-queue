@@ -6,6 +6,20 @@ const addExamBtn = document.getElementById('addExamBtn');
 const newExamName = document.getElementById('newExamName');
 const examList = document.getElementById('examList');
 
+// Logout - envia credenciais erradas para limpar o cache do navegador
+function logout() {
+  const url = window.location.origin + '/painel';
+  const xhr = new XMLHttpRequest();
+  xhr.open('GET', url, true);
+  xhr.setRequestHeader('Authorization', 'Basic ' + btoa('logout:logout'));
+  xhr.onreadystatechange = function () {
+    if (xhr.readyState === 4) {
+      window.location.href = '/';
+    }
+  };
+  xhr.send();
+}
+
 // Toggle admin
 adminToggle.addEventListener('click', () => {
   adminContent.classList.toggle('show');
