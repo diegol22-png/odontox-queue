@@ -2,6 +2,17 @@
 
 ---
 
+## #9 · 2026-02-21 · Exportar histórico de pacientes para Excel
+
+- Adicionado botão **↓ Exportar Excel** na seção de Histórico do painel
+- Gera arquivo `.csv` com BOM UTF-8 (compatível com Excel em português sem distorção de acentos)
+- Exporta os dados conforme o filtro ativo (Todos / Aguardando / Chamado / Concluído / Retirado)
+- Colunas exportadas: `#`, `Nome`, `Exame`, `Entrada`, `Espera`, `Status`
+- Nome do arquivo: `historico-YYYY-MM-DD.csv`
+- Implementação 100% client-side (sem dependências extras no servidor)
+
+---
+
 ## #8 · 2026-02-21 · Histórico por data e retenção de 30 dias
 
 - Retenção de dados no banco alterada de 7 para **30 dias** (`queueModel.js`)
