@@ -360,6 +360,37 @@ function renderHistorico() {
   `;
 }
 
+function exportarHistorico() {
+  const filtered = historicoFiltro === 'all' ? historicoData : historicoData.filter(p => p.status === historicoFiltro);
+  if (filtered.length === 0) {
+    showAlert('Nenhum dado para exportar.', 'warning');
+    return;
+  }
+
+  const statusLabels = { waiting: 'Aguardando', called: 'Chamado', completed: 'Concluido', cancelled: 'Retirado' };
+  const headers = ['#', 'Nome', 'Exame', 'Entrada', 'Espera', 'Status'];
+  const rows = filtered.map(p => [
+    p.position,
+    p.name,
+    p.examType,
+    p.createdAt ? new Date(p.createdAt).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }) : '-',
+    getWaitTime(p),
+    statusLabels[p.status] || p.status,
+  ]);
+
+  const csv = [headers, ...rows]
+    .map(row => row.map(cell => `"${String(cell).replace(/"/g, '""')}"`).join(';'))
+    .join('\n');
+
+  const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `historico-${historicDateInput.value || 'pacientes'}.csv`;
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
 // Socket.IO
 const socket = io();
 
