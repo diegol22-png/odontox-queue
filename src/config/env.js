@@ -26,5 +26,7 @@ module.exports = {
   panel: {
     user: process.env.PANEL_USER || 'admin',
     password: process.env.PANEL_PASSWORD || 'odontox123',
+    operatorUser: process.env.PANEL_OPERATOR_USER || 'tecnico',
+    operatorPassword: process.env.PANEL_OPERATOR_PASSWORD || 'tecnico123',
   },
 };

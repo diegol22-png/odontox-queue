@@ -333,8 +333,21 @@ socket.on('queue:updated', () => {
   loadQueues();
 });
 
+// Verificar role do usuario e esconder admin se operador
+async function checkRole() {
+  try {
+    const res = await fetch('/api/panel/role');
+    const data = await res.json();
+    if (data.role !== 'admin') {
+      const adminSection = document.querySelector('#adminToggle').closest('.admin-section');
+      if (adminSection) adminSection.style.display = 'none';
+    }
+  } catch {}
+}
+
 // Carregar filas inicialmente
 loadQueues();
+checkRole();
 
 // Atualizar tempos de espera a cada minuto
 setInterval(loadQueues, 60000);

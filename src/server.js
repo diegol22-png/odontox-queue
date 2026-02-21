@@ -49,18 +49,39 @@ const queueLimiter = rateLimit({
 // Arquivos estaticos
 app.use(express.static(path.join(__dirname, '../public')));
 
-// Autenticacao do painel
+// Autenticacao do painel (admin + operador)
+const panelUsers = {
+  [env.panel.user]: env.panel.password,
+  [env.panel.operatorUser]: env.panel.operatorPassword,
+};
+
 const panelAuth = basicAuth({
+  users: panelUsers,
+  challenge: true,
+  realm: 'OdontoX Painel',
+});
+
+// Middleware que exige role admin
+const adminOnly = basicAuth({
   users: { [env.panel.user]: env.panel.password },
   challenge: true,
   realm: 'OdontoX Painel',
 });
 
 // Rotas da API
-app.use('/api/exams', examRoutes);
+app.get('/api/exams', examRoutes);
+app.post('/api/exams', adminOnly, examRoutes);
+app.patch('/api/exams/:id', adminOnly, examRoutes);
+app.delete('/api/exams/:id', adminOnly, examRoutes);
 app.use('/api/queue', queueRoutes);
 app.post('/api/queue', queueLimiter);
 app.use('/api/panel', panelAuth, panelRoutes);
+
+// Endpoint para o frontend saber o role do usuario logado
+app.get('/api/panel/role', panelAuth, (req, res) => {
+  const role = req.auth.user === env.panel.user ? 'admin' : 'operator';
+  res.json({ role });
+});
 
 // Rota para pagina da fila (SPA - serve o mesmo HTML)
 app.get('/fila/:id', (req, res) => {
