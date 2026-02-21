@@ -87,6 +87,14 @@ const stmts = {
     DELETE FROM queue_entries WHERE queue_date < ?
   `),
 
+  getAllByDate: db.prepare(`
+    SELECT qe.*, et.name AS exam_name
+    FROM queue_entries qe
+    JOIN exam_types et ON et.id = qe.exam_type_id
+    WHERE qe.queue_date = ?
+    ORDER BY qe.created_at ASC
+  `),
+
   countWaitingByExam: db.prepare(`
     SELECT exam_type_id, COUNT(*) AS total
     FROM queue_entries
@@ -145,12 +153,16 @@ module.exports = {
 
   cleanupOld() {
     const cutoff = new Date();
-    cutoff.setDate(cutoff.getDate() - 7);
+    cutoff.setDate(cutoff.getDate() - 30);
     const cutoffDate = cutoff.toLocaleDateString('sv', { timeZone: 'America/Sao_Paulo' });
     return stmts.cleanupOld.run(cutoffDate);
   },
 
   countWaitingByExam() {
     return stmts.countWaitingByExam.all(todayBrasilia());
+  },
+
+  getAllByDate(date) {
+    return stmts.getAllByDate.all(date);
   },
 };

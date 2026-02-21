@@ -279,14 +279,20 @@ async function removeExam(id) {
 const historicoToggle = document.getElementById('historicoToggle');
 const historicoContent = document.getElementById('historicoContent');
 const historicoList = document.getElementById('historicoList');
+const historicDateInput = document.getElementById('historicDate');
 
 let historicoFiltro = 'all';
 let historicoData = [];
 
+function todayISO() {
+  return new Date().toLocaleDateString('sv', { timeZone: 'America/Sao_Paulo' });
+}
+
 historicoToggle.addEventListener('click', () => {
   historicoContent.classList.toggle('show');
   if (historicoContent.classList.contains('show')) {
-    loadHistorico();
+    if (!historicDateInput.value) historicDateInput.value = todayISO();
+    loadHistorico(historicDateInput.value);
   }
 });
 
@@ -299,13 +305,17 @@ document.getElementById('historicoFiltros').addEventListener('click', (e) => {
   renderHistorico();
 });
 
-async function loadHistorico() {
+function buscarHistorico() {
+  const date = historicDateInput.value;
+  if (!date) return;
+  loadHistorico(date);
+}
+
+async function loadHistorico(date) {
   try {
-    const res = await fetch('/api/panel/queues');
-    const queues = await res.json();
-    historicoData = queues.flatMap(q =>
-      q.patients.map(p => ({ ...p, examType: q.examType.name }))
-    ).sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+    const res = await fetch(`/api/panel/history?date=${date}`);
+    if (!res.ok) { historicoList.innerHTML = '<p style="color:var(--danger)">Erro ao carregar histórico.</p>'; return; }
+    historicoData = (await res.json()).sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
     renderHistorico();
   } catch {
     historicoList.innerHTML = '<p style="color:var(--danger)">Erro ao carregar histórico.</p>';
@@ -346,7 +356,7 @@ function renderHistorico() {
         `).join('')}
       </tbody>
     </table>
-    <p style="text-align:right;color:var(--gray-500);font-size:0.8rem;margin-top:0.5rem;">${filtered.length} paciente(s)</p>
+    <p style="text-align:right;color:var(--gray-500);font-size:0.8rem;margin-top:0.5rem;">${filtered.length} paciente(s) · ${historicDateInput.value ? new Date(historicDateInput.value + 'T12:00:00').toLocaleDateString('pt-BR') : ''}</p>
   `;
 }
 

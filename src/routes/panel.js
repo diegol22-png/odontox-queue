@@ -13,6 +13,19 @@ router.get('/role', (req, res) => {
   res.json({ role });
 });
 
+router.get('/history', (req, res, next) => {
+  try {
+    const { date } = req.query;
+    if (!date || !/^\d{4}-\d{2}-\d{2}$/.test(date)) {
+      return res.status(400).json({ error: { message: 'Data inválida. Use o formato YYYY-MM-DD.', code: 'INVALID_DATE' } });
+    }
+    const data = queueService.getHistoryByDate(date);
+    res.json(data);
+  } catch (err) {
+    next(err);
+  }
+});
+
 router.get('/queues', (req, res, next) => {
   try {
     const queues = queueService.getAllQueues();

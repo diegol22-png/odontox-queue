@@ -24,10 +24,15 @@
     <!-- Historico Section -->
     <div class="admin-section">
       <div class="admin-toggle" id="historicoToggle">
-        &#128203; Histórico de Pacientes do Dia
+        &#128203; Histórico de Pacientes
       </div>
       <div class="admin-content" id="historicoContent">
         <div class="card">
+          <div style="display:flex;align-items:center;gap:0.5rem;flex-wrap:wrap;margin-bottom:1rem;">
+            <label for="historicDate" style="font-size:0.85rem;font-weight:600;color:var(--gray-600);">Data:</label>
+            <input type="date" id="historicDate" class="btn btn-sm" style="font-size:0.85rem;padding:0.25rem 0.5rem;cursor:pointer;">
+            <button class="btn btn-primary btn-sm" onclick="buscarHistorico()">Buscar</button>
+          </div>
           <div id="historicoFiltros" style="display:flex;gap:0.5rem;flex-wrap:wrap;margin-bottom:1rem;">
             <button class="btn btn-sm filtro-btn active" data-status="all">Todos</button>
             <button class="btn btn-sm filtro-btn" data-status="waiting">Aguardando</button>

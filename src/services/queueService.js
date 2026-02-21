@@ -127,6 +127,20 @@ function cancelPatient(id) {
   return { success: true };
 }
 
+function getHistoryByDate(date) {
+  const entries = queueModel.getAllByDate(date);
+  return entries.map(e => ({
+    id: e.id,
+    name: e.patient_name,
+    phone: e.phone.substring(0, 3) + '****' + e.phone.substring(e.phone.length - 4),
+    status: e.status,
+    position: e.position,
+    createdAt: e.created_at,
+    calledAt: e.called_at,
+    examType: e.exam_name,
+  }));
+}
+
 function getAllQueues() {
   const exams = examModel.getAll();
   const allEntries = queueModel.getAllToday();
@@ -166,4 +180,5 @@ module.exports = {
   completePatient,
   cancelPatient,
   getAllQueues,
+  getHistoryByDate,
 };
