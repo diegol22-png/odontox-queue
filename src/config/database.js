@@ -40,6 +40,15 @@ db.exec(`
     ON queue_entries(queue_date);
 `);
 
+// Adicionar colunas de mensagem customizada (migracao segura)
+const columns = db.pragma('table_info(exam_types)').map(c => c.name);
+if (!columns.includes('queue_message')) {
+  db.exec(`ALTER TABLE exam_types ADD COLUMN queue_message TEXT`);
+}
+if (!columns.includes('call_message')) {
+  db.exec(`ALTER TABLE exam_types ADD COLUMN call_message TEXT`);
+}
+
 const seedExams = db.prepare('INSERT OR IGNORE INTO exam_types (name) VALUES (?)');
 const initialExams = [
   'Raio-X Panoramico',

@@ -156,12 +156,50 @@ async function loadExamList() {
     const exams = await res.json();
     examList.innerHTML = exams.map(e => `
       <div class="exam-list-item">
-        <span>${escapeHtml(e.name)}</span>
+        <div style="flex:1">
+          <span>${escapeHtml(e.name)}</span>
+          <button class="btn btn-sm" style="margin-left:0.5rem;font-size:0.7rem;" onclick="toggleMsgEditor(${e.id})">Mensagens</button>
+        </div>
         <button class="btn btn-danger btn-sm" onclick="removeExam(${e.id})">Remover</button>
+      </div>
+      <div id="msgEditor-${e.id}" class="msg-editor" style="display:none;padding:0.75rem;background:#f9f9f9;border-radius:6px;margin-bottom:0.5rem;">
+        <p style="font-size:0.75rem;color:var(--gray-500);margin-bottom:0.5rem;">Variáveis: <b>{nome}</b>, <b>{exame}</b>, <b>{posicao}</b>, <b>{link}</b></p>
+        <label style="font-size:0.8rem;font-weight:600;">Mensagem de entrada na fila:</label>
+        <textarea id="queueMsg-${e.id}" rows="4" style="width:100%;margin:0.25rem 0 0.5rem;font-size:0.8rem;padding:0.5rem;border:1px solid #ddd;border-radius:4px;resize:vertical;">${escapeHtml(e.queue_message || '')}</textarea>
+        <label style="font-size:0.8rem;font-weight:600;">Mensagem de chamada:</label>
+        <textarea id="callMsg-${e.id}" rows="3" style="width:100%;margin:0.25rem 0 0.5rem;font-size:0.8rem;padding:0.5rem;border:1px solid #ddd;border-radius:4px;resize:vertical;">${escapeHtml(e.call_message || '')}</textarea>
+        <button class="btn btn-primary btn-sm" onclick="saveMessages(${e.id})">Salvar Mensagens</button>
+        <span style="font-size:0.7rem;color:var(--gray-500);margin-left:0.5rem;">Deixe vazio para usar a mensagem padrão</span>
       </div>
     `).join('');
   } catch {
     examList.innerHTML = '<p style="color:var(--danger)">Erro ao carregar exames.</p>';
+  }
+}
+
+function toggleMsgEditor(examId) {
+  const editor = document.getElementById(`msgEditor-${examId}`);
+  editor.style.display = editor.style.display === 'none' ? 'block' : 'none';
+}
+
+async function saveMessages(examId) {
+  const queueMsg = document.getElementById(`queueMsg-${examId}`).value.trim();
+  const callMsg = document.getElementById(`callMsg-${examId}`).value.trim();
+
+  try {
+    const res = await fetch(`/api/exams/${examId}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ queue_message: queueMsg, call_message: callMsg }),
+    });
+
+    if (res.ok) {
+      showAlert('Mensagens salvas com sucesso!', 'success');
+    } else {
+      showAlert('Erro ao salvar mensagens.', 'error');
+    }
+  } catch {
+    showAlert('Erro de conexão.', 'error');
   }
 }
 

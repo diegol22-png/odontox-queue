@@ -26,25 +26,44 @@ async function sendMessage(phone, text) {
   return response.json();
 }
 
-async function sendQueueConfirmation(phone, name, position, examName, queueId) {
+function replacePlaceholders(template, vars) {
+  return template
+    .replace(/\{nome\}/g, vars.nome || '')
+    .replace(/\{exame\}/g, vars.exame || '')
+    .replace(/\{posicao\}/g, vars.posicao || '')
+    .replace(/\{link\}/g, vars.link || '');
+}
+
+async function sendQueueConfirmation(phone, name, position, examName, queueId, customMessage) {
   const link = `${env.baseUrl}/fila/${queueId}`;
-  const text =
-    `Ola *${name}*!\n` +
-    `Você entrou na fila virtual da *OdontoX*.\n\n` +
-    `*Exame:* *${examName}*\n\n` +
-    `*Sua posição:* ${position}\n\n` +
-    `Acompanhe sua fila em tempo real:\n\n` +
-    `${link}\n\n` +
-    `Aguarde a chamada. Obrigado!`;
+
+  let text;
+  if (customMessage) {
+    text = replacePlaceholders(customMessage, { nome: name, exame: examName, posicao: position, link });
+  } else {
+    text =
+      `Ola *${name}*!\n` +
+      `Você entrou na fila virtual da *OdontoX*.\n\n` +
+      `*Exame:* *${examName}*\n\n` +
+      `*Sua posição:* ${position}\n\n` +
+      `Acompanhe sua fila em tempo real:\n\n` +
+      `${link}\n\n` +
+      `Aguarde a chamada. Obrigado!`;
+  }
 
   return sendMessage(phone, text);
 }
 
-async function sendCallNotification(phone, name, examName) {
-  const text =
-    `*${name}*, e a sua vez!\n\n` +
-    `Dirija-se ao setor de *${examName}*.\n\n` +
-    `OdontoX agradece sua paciencia!`;
+async function sendCallNotification(phone, name, examName, customMessage) {
+  let text;
+  if (customMessage) {
+    text = replacePlaceholders(customMessage, { nome: name, exame: examName });
+  } else {
+    text =
+      `*${name}*, e a sua vez!\n\n` +
+      `Dirija-se ao setor de *${examName}*.\n\n` +
+      `OdontoX agradece sua paciencia!`;
+  }
 
   return sendMessage(phone, text);
 }

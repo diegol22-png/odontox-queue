@@ -47,6 +47,14 @@ router.patch('/:id', validateIdParam, (req, res, next) => {
       examModel.deactivate(req.params.id);
     }
   }
+  if (req.body.queue_message !== undefined || req.body.call_message !== undefined) {
+    const current = examModel.getById(req.params.id);
+    examModel.updateMessages(
+      req.params.id,
+      req.body.queue_message !== undefined ? req.body.queue_message : current.queue_message,
+      req.body.call_message !== undefined ? req.body.call_message : current.call_message,
+    );
+  }
 
   const updated = examModel.getById(req.params.id);
   res.json(updated);

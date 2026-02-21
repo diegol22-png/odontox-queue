@@ -35,7 +35,7 @@ async function enqueue(name, phone, examTypeId) {
   const ahead = queueModel.getPositionAhead(examTypeId, entry.position);
 
   // WhatsApp - fire and forget
-  whatsappService.sendQueueConfirmation(phone, name, ahead + 1, entry.exam_name, entry.id)
+  whatsappService.sendQueueConfirmation(phone, name, ahead + 1, entry.exam_name, entry.id, exam.queue_message)
     .catch(err => console.error('[WhatsApp] Erro ao enviar confirmacao:', err.message));
 
   emitQueueUpdate(examTypeId);
@@ -85,7 +85,7 @@ async function callNext(examTypeId) {
   }
 
   // WhatsApp - fire and forget
-  whatsappService.sendCallNotification(patient.phone, patient.patient_name, patient.exam_name)
+  whatsappService.sendCallNotification(patient.phone, patient.patient_name, patient.exam_name, exam.call_message)
     .catch(err => console.error('[WhatsApp] Erro ao enviar chamada:', err.message));
 
   if (io) {
