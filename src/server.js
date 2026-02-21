@@ -69,10 +69,12 @@ const adminOnly = basicAuth({
 });
 
 // Rotas da API
-app.get('/api/exams', examRoutes);
-app.post('/api/exams', adminOnly, examRoutes);
-app.patch('/api/exams/:id', adminOnly, examRoutes);
-app.delete('/api/exams/:id', adminOnly, examRoutes);
+// GET /api/exams e livre (usado tambem pela recepcao); demais metodos exigem admin
+const examAuthMiddleware = (req, res, next) => {
+  if (req.method === 'GET') return next();
+  return adminOnly(req, res, next);
+};
+app.use('/api/exams', examAuthMiddleware, examRoutes);
 app.use('/api/queue', queueRoutes);
 app.post('/api/queue', queueLimiter);
 app.use('/api/panel', panelAuth, panelRoutes);
